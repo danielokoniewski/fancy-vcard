@@ -1,20 +1,9 @@
-import logging
-from enum import Enum
+from fancy_vcard.vcard import VCard, VCardVersion
 
 
-class VCardVersion(Enum):
-    V3 = 3
-    V4 = 4
-
-
-class VCard:
-    """
-    https://www.rfc-editor.org/rfc/rfc6350
-
-    """
-    _version: VCardVersion
-
-    text_content_v3 = """BEGIN:VCARD
+def test_v3():
+    vcard = VCard(VCardVersion.V3)
+    assert vcard.get_text() == """BEGIN:VCARD
 VERSION:3.0
 N:Mustermann;Erika;;Dr.;
 FN:Dr. Erika Mustermann
@@ -30,7 +19,10 @@ URL:http://de.wikipedia.org/
 REV:2014-03-01T22:11:10Z
 END:VCARD"""
 
-    text_content_v4 = """BEGIN:VCARD
+
+def test_v4():
+    vcard = VCard(VCardVersion.V4)
+    assert vcard.get_text() == """BEGIN:VCARD
 VERSION:4.0
 N:Mustermann;Erika;;Dr.;
 FN:Dr. Erika Mustermann
@@ -44,12 +36,3 @@ ADR;TYPE=home;LABEL="Heidestraße 17\n51147 Köln\nDeutschland":;;Heidestraße 1
 EMAIL:erika@mustermann.de
 REV:20140301T221110Z
 END:VCARD"""  # noqa: B950,E501
-
-    def __init__(self, version: VCardVersion = VCardVersion.V3):
-        self._version = version
-        logging.debug(f'version {self._version}')
-
-    def get_text(self) -> str:
-        return self.text_content_v3 \
-            if self._version == VCardVersion.V3 \
-            else self.text_content_v4
